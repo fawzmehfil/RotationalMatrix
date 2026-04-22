@@ -2,7 +2,7 @@
 
 A small Python project for **visualizing 3D rotation**.
 
-It started life as a single script that rotated a hard-coded cube by applying X/Y/Z rotations every frame. This cleaned-up version turns that idea into a tiny, testable package with:
+It started life as a single script that rotated a hard-coded cube by applying X/Y/Z rotations every frame. I initially used this to learn Matplotlib and later expanded on it. This cleaned-up version turns that idea into a tiny, testable package with:
 
 - **Rotation matrices** (Euler XYZ and axis-angle)
 - **Quaternions** (for incremental “keep rotating forever” style updates)
