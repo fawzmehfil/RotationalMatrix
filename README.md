@@ -1,4 +1,6 @@
-## RotationalMatrix
+## Rotational Matrix
+
+![Demo](assets/demo.png)
 
 A small Python project for **visualizing 3D rotation**.
 
