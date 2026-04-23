@@ -1,15 +1,27 @@
-## Rotational Matrix
+## Rotational Matrix (Quaternion Flow)
 
 ![Demo](assets/demo.png)
 
-A small Python project for **visualizing 3D rotation**.
+A small Python project for **visualizing rigid body rotations in ℝ³**.
 
-It started life as a single script that rotated a hard-coded cube by applying X/Y/Z rotations every frame. I initially used this to learn Matplotlib and later expanded on it. This cleaned-up version turns that idea into a tiny, testable package with:
+It started as a single script applying sequential X/Y/Z Euler rotations to a hard-coded cube, mainly to explore how rotation composition behaves over time. It has since been refactored into a minimal, testable package exposing multiple parameterizations of rotations in **SO(3)** and their action on discrete point sets.
 
-- **Rotation matrices** (Euler XYZ and axis-angle)
-- **Quaternions** (for incremental “keep rotating forever” style updates)
-- A simple **matplotlib wireframe viewer**
-- A CLI (`rotmat`) so you can play with shapes and rotation parameters
+Features:
+
+- **Rotation matrices**
+  - Euler XYZ composition (order-dependent, non-commutative)
+  - Axis–angle via Rodrigues’ formula  
+- **Quaternions**
+  - Unit quaternion representation of rotations (S³)
+  - Stable incremental updates via repeated composition  
+- **Matplotlib wireframe viewer**
+  - Applies linear transforms directly to vertex sets  
+- **CLI (`rotmat`)**
+  - Parameterized control over rotation mode and angular velocity  
+
+
+
+
 
 ### Quick start
 
@@ -63,13 +75,31 @@ rotmat --mode quaternion --shape cube --x 1 --y 2 --z 3
 - **`src/rotational_matrix/cli.py`**: argparse-powered CLI
 - **`tests/`**: a few quick sanity tests (orthonormal matrices, norm preservation, matrix↔quaternion roundtrip)
 
+---
+
 ### Notes / design choices
 
-- **Why numpy?** It keeps the math clear and makes it easy to rotate an entire point set at once.
+- **Why numpy?**  
+  All transformations are vectorized:
+  \[
+  V' = R V
+  \]
+  This keeps the implementation close to the linear algebra while avoiding per-vertex loops and preserving orthogonality up to floating-point precision.
+
 - **Why multiple modes?**
-  - *Euler* is straightforward and matches how the original project worked.
-  - *Quaternion* mode is useful for incremental updates (apply a small “step rotation” repeatedly).
-  - *Axis-angle* is a nice middle ground that’s compact and intuitive.
+
+  - *Euler*  
+    Direct and intuitive, but order-dependent and prone to drift under repeated application.
+
+  - *Quaternion*  
+    Represents rotations as unit elements on S³. Supports stable incremental updates:
+    \[
+    q_{t+1} = q_{\Delta} \cdot q_t
+    \]
+    Avoids numerical instability from repeated matrix multiplication.
+
+  - *Axis-angle*  
+    Minimal and geometrically explicit (axis + magnitude). Avoids ordering issues while remaining easier to interpret than quaternions.
 
 ### Dev checks
 
